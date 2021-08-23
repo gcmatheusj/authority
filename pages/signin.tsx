@@ -48,7 +48,15 @@ export default function SignIn() {
       <main className={styles.main}>
         <h1>Log in to Authority</h1>
 
-        {alert && <span>{alert.message}</span>}
+        {alert && (
+          <span
+            className={
+              alert && alert.type === 'success' ? styles.success : styles.error
+            }
+          >
+            {alert.message}
+          </span>
+        )}
 
         <form className={styles.form} onSubmit={onSubmit}>
           <input
