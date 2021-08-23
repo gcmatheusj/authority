@@ -5,21 +5,23 @@ import Image from 'next/image'
 
 import { useAuth } from 'hooks/useAuth'
 
-import styles from 'styles/Home.module.css'
-
 import { AlertState } from 'pages'
+
+import styles from 'styles/pages.module.css'
 
 export default function SignIn() {
   const { handleSignIn } = useAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const [alert, setAlert] = useState<AlertState | undefined>()
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
     setAlert(undefined)
+    setLoading(true)
 
     try {
       await handleSignIn({
@@ -31,6 +33,8 @@ export default function SignIn() {
         type: 'error',
         message: error.response.data.error
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -42,12 +46,13 @@ export default function SignIn() {
       </Head>
 
       <main className={styles.main}>
-        <h1>SignIn</h1>
+        <h1>Log in to Authority</h1>
 
         {alert && <span>{alert.message}</span>}
 
-        <form onSubmit={onSubmit}>
+        <form className={styles.form} onSubmit={onSubmit}>
           <input
+            className={styles.input}
             placeholder="Type your email"
             type="email"
             name="email"
@@ -56,6 +61,7 @@ export default function SignIn() {
           />
 
           <input
+            className={styles.input}
             placeholder="Type your password"
             type="password"
             name="password"
@@ -63,8 +69,15 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button type="submit">SignIn</button>
-          <Link href="/">Create Account</Link>
+          <button className={styles.button} type="submit" disabled={loading}>
+            {loading ? 'Loading...' : 'Sign In'}
+          </button>
+
+          <div className={styles.linkWrapper}>
+            <Link href="/" passHref>
+              <a className={styles.link}>Create Account</a>
+            </Link>
+          </div>
         </form>
       </main>
 

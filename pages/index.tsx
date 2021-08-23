@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import { useAuth } from 'hooks/useAuth'
 
-import styles from 'styles/Home.module.css'
+import styles from 'styles/pages.module.css'
 
 export interface AlertState {
   type: 'success' | 'error'
@@ -18,12 +18,14 @@ export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const [alert, setAlert] = useState<AlertState | undefined>()
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
     setAlert(undefined)
+    setLoading(true)
 
     try {
       await handleSignUp({
@@ -35,11 +37,16 @@ export default function Register() {
         type: 'success',
         message: 'Account successfully created'
       })
+      setName('')
+      setEmail('')
+      setPassword('')
     } catch (error) {
       setAlert({
         type: 'error',
         message: error.response.data.error
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -53,10 +60,19 @@ export default function Register() {
       <main className={styles.main}>
         <h1>Create Your Account</h1>
 
-        {alert && <span>{alert.message}</span>}
+        {alert && (
+          <span
+            className={
+              alert && alert.type === 'success' ? styles.success : styles.error
+            }
+          >
+            {alert.message}
+          </span>
+        )}
 
-        <form onSubmit={onSubmit}>
+        <form className={styles.form} onSubmit={onSubmit}>
           <input
+            className={styles.input}
             placeholder="Type your name"
             type="text"
             name="name"
@@ -65,6 +81,7 @@ export default function Register() {
           />
 
           <input
+            className={styles.input}
             placeholder="Type your email"
             type="email"
             name="email"
@@ -73,6 +90,7 @@ export default function Register() {
           />
 
           <input
+            className={styles.input}
             placeholder="Type your password"
             type="password"
             name="password"
@@ -80,8 +98,14 @@ export default function Register() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button type="submit">Register</button>
-          <Link href="/signin">Go to Signin</Link>
+          <button className={styles.button} type="submit">
+            {loading ? 'Loading...' : 'Register'}
+          </button>
+          <div className={styles.linkWrapper}>
+            <Link href="/signin" passHref>
+              <a className={styles.link}>Go to SignIn</a>
+            </Link>
+          </div>
         </form>
       </main>
 

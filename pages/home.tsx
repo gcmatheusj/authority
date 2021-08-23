@@ -1,11 +1,12 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 
 import { useAuth } from 'hooks/useAuth'
 
-import styles from 'styles/Home.module.css'
-
 import { withSSRAuth } from 'utils/withSSRAuth'
+
+import styles from 'styles/pages.module.css'
 
 export default function Home() {
   const { user, handleSignOut } = useAuth()
@@ -20,7 +21,13 @@ export default function Home() {
       <main className={styles.main}>
         <h1>Welcome Back, {user?.name}</h1>
 
-        <button onClick={handleSignOut}>SignOut</button>
+        <div className={styles.linkWrapper}>
+          <Link href="/signin" passHref>
+            <a className={styles.link} onClick={handleSignOut}>
+              Sign Out
+            </a>
+          </Link>
+        </div>
       </main>
 
       <footer className={styles.footer}>
