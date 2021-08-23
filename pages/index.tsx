@@ -1,10 +1,16 @@
 import { FormEvent, useState } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 
 import { useAuth } from 'hooks/useAuth'
 
 import styles from 'styles/Home.module.css'
+
+export interface AlertState {
+  type: 'success' | 'error'
+  message: string
+}
 
 export default function Register() {
   const { handleSignUp } = useAuth()
@@ -12,12 +18,12 @@ export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [alert, setAlert] = useState<AlertState | undefined>()
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
-    setError('')
+    setAlert(undefined)
 
     try {
       await handleSignUp({
@@ -25,8 +31,15 @@ export default function Register() {
         email,
         password
       })
+      setAlert({
+        type: 'success',
+        message: 'Account successfully created'
+      })
     } catch (error) {
-      setError(error.response.data.error)
+      setAlert({
+        type: 'error',
+        message: error.response.data.error
+      })
     }
   }
 
@@ -40,7 +53,7 @@ export default function Register() {
       <main className={styles.main}>
         <h1>Create Your Account</h1>
 
-        {error && <span>{error}</span>}
+        {alert && <span>{alert.message}</span>}
 
         <form onSubmit={onSubmit}>
           <input
@@ -68,6 +81,7 @@ export default function Register() {
           />
 
           <button type="submit">Register</button>
+          <Link href="/signin">Go to Signin</Link>
         </form>
       </main>
 
