@@ -6,6 +6,8 @@ import {
   useEffect
 } from 'react'
 import axios from 'axios'
+import router from 'next/router'
+import { setCookie, parseCookies, destroyCookie } from 'nookies'
 
 interface IHandleSignUpArgs {
   name: string
@@ -42,10 +44,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | undefined>()
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('@authority:user')
+    const { '@authority:user': authUser } = parseCookies()
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    if (authUser) {
+      setUser(JSON.parse(authUser))
     }
   }, [])
 
@@ -59,8 +61,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       )
 
-      localStorage.setItem('@authority:user', JSON.stringify(data))
+      setCookie(undefined, '@authority:user', JSON.stringify(data))
       setUser(data as User)
+      router.push('/home')
     },
     []
   )
@@ -77,8 +80,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   )
 
   const handleSignOut = useCallback(() => {
+    router.push('/signin')
     setUser(undefined)
-    localStorage.removeItem('@authority:user')
+    destroyCookie(undefined, '@authority:user')
   }, [])
 
   return (
