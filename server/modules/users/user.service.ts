@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { compare, hash } from 'bcryptjs'
 import { getRepository } from 'typeorm'
 
