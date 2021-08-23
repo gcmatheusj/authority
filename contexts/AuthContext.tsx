@@ -5,9 +5,10 @@ import {
   useCallback,
   useEffect
 } from 'react'
-import axios from 'axios'
 import router from 'next/router'
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
+
+import { api } from 'services/api'
 
 interface IHandleSignUpArgs {
   name: string
@@ -53,13 +54,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const handleSignIn = useCallback(
     async ({ email, password }: IHandleSignInArgs) => {
-      const { data } = await axios.post<User>(
-        'http://localhost:3000/api/users/authenticate',
-        {
-          email,
-          password
-        }
-      )
+      const { data } = await api.post<User>('/api/users/authenticate', {
+        email,
+        password
+      })
 
       setCookie(undefined, '@authority:user', JSON.stringify(data))
       setUser(data as User)
@@ -70,7 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const handleSignUp = useCallback(
     async ({ name, email, password }: IHandleSignUpArgs) => {
-      await axios.post('http://localhost:3000/api/users', {
+      await api.post('/api/users', {
         name,
         email,
         password
