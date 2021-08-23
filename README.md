@@ -1,34 +1,47 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Installing Dependencies
 
-## Getting Started
-
-First, run the development server:
+First, install the dependencies:
 
 ```bash
-npm run dev
-# or
+yarn
+```
+
+## Development Setup
+
+You need a database connection specified in the `.env`. Please refer to `.env.example` for a example configuration file.
+
+If you are developing on localhost, you can use a dockerized database:
+`docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=docker -e POSTGRES_DB=authority -p 5432:5432 -d postgres`
+
+To set up the database you create the docker image and you can run the command: `yarn typeorm migration:run` to create the tables.
+
+## Running the Project
+
+Then you can can run the development server:
+
+```bash
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Endpoints
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+POST http://localhost:3000/api/users - Create new users to use the app:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+### Params
+```
+{
+  "name": "Jhon Doe",
+  "email": "jhondoe@email.com",
+  "password": "12345678"
+}
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+POST http://localhost:3000/api/users/authenticate - Authenticate the user with valid credentials:
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Params
+```
+{
+  "email": "jhondoe@email.com",
+  "password": "12345678"
+}
+```
